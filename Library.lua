@@ -1372,62 +1372,40 @@ end
 function Library:AddDraggableLabel(Text: string)
     local Table = {}
 
-    local Background = Library:MakeOutline(ScreenGui, Library.CornerRadius, 10)
-    Background.AutomaticSize = Enum.AutomaticSize.XY
-    Background.Position = UDim2.fromOffset(6, 6)
-    Background.Size = UDim2.fromOffset(0, 0)
-    Library:UpdateDPI(Background, {
-        Position = false,
-        Size = false,
-    })
-
-    local Holder = New("Frame", {
-        BackgroundColor3 = "BackgroundColor",
-        Position = UDim2.fromOffset(2, 2),
-        Size = UDim2.new(1, -4, 1, -4),
-        Parent = Background,
-    })
-    New("UICorner", {
-        CornerRadius = UDim.new(0, Library.CornerRadius - 1),
-        Parent = Holder,
-    })
-
     local Label = New("TextLabel", {
-        BackgroundTransparency = 1,
-        Size = UDim2.new(1, 0, 1, 0),
+        AutomaticSize = Enum.AutomaticSize.XY,
+        BackgroundColor3 = "BackgroundColor",
+        Size = UDim2.fromOffset(0, 0),
+        Position = UDim2.fromOffset(6, 6),
         Text = Text,
         TextSize = 15,
-        TextXAlignment = Enum.TextXAlignment.Center,
-        Parent = Holder,
+        ZIndex = 10,
+        Parent = ScreenGui,
+    })
+    New("UICorner", {
+        CornerRadius = UDim.new(0, Library.CornerRadius),
+        Parent = Label,
     })
     New("UIPadding", {
+        PaddingBottom = UDim.new(0, 6),
         PaddingLeft = UDim.new(0, 12),
         PaddingRight = UDim.new(0, 12),
         PaddingTop = UDim.new(0, 6),
-        PaddingBottom = UDim.new(0, 6),
         Parent = Label,
     })
+    Library:MakeOutline(Label, Library.CornerRadius, 10)
 
-    Library:MakeDraggable(Background, Background, true)
+    Library:MakeDraggable(Label, Label, true)
 
-    function Table:SetText(NewText: string)
-        Label.Text = NewText
-    end
+    Table.Label = Label
 
-    function Table:GetText()
-        return Label.Text
+    function Table:SetText(Text: string)
+        Label.Text = Text
     end
 
     function Table:SetVisible(Visible: boolean)
-        Background.Visible = Visible
+        Label.Visible = Visible
     end
-
-    function Table:Destroy()
-        Background:Destroy()
-    end
-
-    Table.Background = Background
-    Table.Label = Label
 
     return Table
 end
@@ -1452,7 +1430,6 @@ end
 local CurrentMenu
 function Library:AddContextMenu(
     Holder: GuiObject,
-    Size: UDim2 | () -> (),
     Offset: { [number]: number } | () -> {},
     List: number?,
     ActiveCallback: (Active: boolean) -> ()?
