@@ -1418,6 +1418,10 @@ function Library:AddDraggableLabel(Text: string)
         return Label.Text
     end
 
+    function Table:SetVisible(Visible: boolean)
+        Background.Visible = Visible
+    end
+
     function Table:Destroy()
         Background:Destroy()
     end
