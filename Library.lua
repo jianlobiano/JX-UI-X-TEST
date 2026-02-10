@@ -1369,6 +1369,81 @@ function Library:AddDraggableMenu(Name: string)
     return Background, Container
 end
 
+function Library:AddDraggableLabel(Text: string)
+    local Table = {}
+
+    local Background = Library:MakeOutline(ScreenGui, Library.CornerRadius, 10)
+    Background.AutomaticSize = Enum.AutomaticSize.XY
+    Background.Position = UDim2.fromOffset(6, 6)
+    Background.Size = UDim2.fromOffset(0, 0)
+    Library:UpdateDPI(Background, {
+        Position = false,
+        Size = false,
+    })
+
+    local Holder = New("Frame", {
+        BackgroundColor3 = "BackgroundColor",
+        Position = UDim2.fromOffset(2, 2),
+        Size = UDim2.new(1, -4, 1, -4),
+        Parent = Background,
+    })
+    New("UICorner", {
+        CornerRadius = UDim.new(0, Library.CornerRadius - 1),
+        Parent = Holder,
+    })
+
+    local Label = New("TextLabel", {
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 1, 0),
+        Text = Text,
+        TextSize = 15,
+        TextXAlignment = Enum.TextXAlignment.Center,
+        Parent = Holder,
+    })
+    New("UIPadding", {
+        PaddingLeft = UDim.new(0, 12),
+        PaddingRight = UDim.new(0, 12),
+        PaddingTop = UDim.new(0, 6),
+        PaddingBottom = UDim.new(0, 6),
+        Parent = Label,
+    })
+
+    Library:MakeDraggable(Background, Background, true)
+
+    function Table:SetText(NewText: string)
+        Label.Text = NewText
+    end
+
+    function Table:GetText()
+        return Label.Text
+    end
+
+    function Table:Destroy()
+        Background:Destroy()
+    end
+
+    Table.Background = Background
+    Table.Label = Label
+
+    return Table
+end
+
+--// Watermark - Deprecated \\--
+do
+    local WatermarkLabel = Library:AddDraggableLabel("")
+    WatermarkLabel:SetVisible(false)
+
+    function Library:SetWatermark(Text: string)
+        warn("Watermark is deprecated, please use Library:AddDraggableLabel instead.")
+        WatermarkLabel:SetText(Text)
+    end
+
+    function Library:SetWatermarkVisibility(Visible: boolean)
+        warn("Watermark is deprecated, please use Library:AddDraggableLabel instead.")
+        WatermarkLabel:SetVisible(Visible)
+    end
+end
+
 --// Context Menu \\--
 local CurrentMenu
 function Library:AddContextMenu(
